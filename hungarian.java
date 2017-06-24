@@ -1,10 +1,34 @@
 
-
+import java.awt.*;
+import java.awt.event.*;
 import java.util.Scanner;
 
-class hungarian {
-	final static int N=4;
-	public static void reduction(int[][] cm, int x) {
+import javax.swing.*;
+
+
+public class hungarian
+{
+  static JFrame frame;
+  private static JTextField inputField [][];
+  private static JTextField inputField1;
+  public static void main(String[] args)
+  {
+    SwingUtilities.invokeLater(new Runnable()
+    {
+      public void run()
+      {
+        displayJFrame();
+      }
+    });
+
+	
+  }
+  
+  
+  //-----------------------column and row reduction------------------------------------
+  
+  
+  public static void reduction(int[][] cm, int x) {
 		int n=cm.length;
 		int min[]=new int[n];
 		int min1=cm[0][0];
@@ -31,7 +55,13 @@ class hungarian {
 		}
 		 
 		}
-	public static void subrow(int[][] cm,int[] rflag,int[] cflag)
+  
+  
+  
+  // ---------------------------------sub row adding columns------------------------------
+  
+  
+  public static void subrow(int[][] cm,int[] rflag,int[] cflag)
 	{
 		int n=cm.length;
 		double min = Double.POSITIVE_INFINITY;
@@ -49,9 +79,14 @@ class hungarian {
 			if(cflag[j]==1)
 				cm[i][j]=cm[i][j]+(int)min;
 		}}
-		print(cm);
+		
 		drawline(cm);
 	}
+  
+  
+  //----------------------------drawing lines ----------------------------------------------
+  
+  
 	public static int drawlines(int[][] cm,int[] rflag,int[] cflag,int clines)
 	{
 		int n=cm.length;
@@ -114,6 +149,10 @@ class hungarian {
 		}
 		return clines;
 	}
+	
+	//----------------counitng lines with zeroes---------------------------------
+	
+	
 	public static void drawline(int[][] cm)
 	{
 		int n=cm.length;
@@ -137,102 +176,208 @@ class hungarian {
 		}
 			 
 	}
-	    static void printSolution(int board[][],int temp6[][])
-    {  
-		 int ar2[] = new int[10];
-		 int ar1[] = new int[10];int k=0,sum=0;
-        for (int i = 0; i < N; i++)
-        {
-            for (int j = 0; j < N; j++)
-                {
-					System.out.print(" " + board[i][j]
-                                 + " ");
-                           if(board[i][j]==999){sum+=temp6[i][j];ar1[k]=i;ar2[k]=j;k++;}      
-                                 
-                                 
-                                 }
-            System.out.println();
-        }
-        for(int i=0;i<k;i++){System.out.println(ar1[i]+" "+ar2[i]);}
-                    System.out.println("Optimal  "+sum);
+	
+	
+	//-----------------printsoln------------------------------
+	
+	
+	 static void printSolution(int board[][],int temp6[][])
+	    {  
+			 int ar2[] = new int[10];
+			 int ar1[] = new int[10];int k=0,sum=0;
+	        for (int i = 0; i < board.length; i++)
+	        {
+	            for (int j = 0; j < board[0].length; j++)
+	                {
+						//System.out.print(" " + board[i][j]
+	                              //   + " ");
+	                           if(board[i][j]==999){sum+=temp6[i][j];ar1[k]=i;ar2[k]=j;k++;}      
+	                                 
+	                                 
+	                                 }
+	            //System.out.println();
+	        }
+	       /* for(int i=0;i<k;i++){System.out.println(ar1[i]+" "+ar2[i]);}
+	                    System.out.println("Optimal  "+sum);*/
+	        JFrame frame1 = new JFrame("Optimal Solution");
+	        String x= "";
+	        JButton[] buttons = new JButton[k+1];
+	        for(int i=0;i<k;i++)
+	        { 
+	        	x=x+ar1[i];
+	        	x=x+","+ar2[i];
+	        	buttons[i]=new JButton(x);
+	        	x="";
+	        }
+	        x="";
+	        x=x+sum;
+	        buttons[k]=new JButton(x);
+	        frame1.getContentPane().setLayout(new FlowLayout());
+	        for(int i=0;i<=k;i++){frame1.add(buttons[i]);}
+	        frame1.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+	        frame1.setPreferredSize(new Dimension(300, 200));
+	        frame1.pack();
+	        frame1.setLocationRelativeTo(null);
+	        frame1.setVisible(true);
 
-    }
-	    static boolean isSafe(int board[][], int row, int col)
-    {
-        int i, j;
-            if(board[row][col]!=0) return false;
-            
-        
-        for (i = 0; i < col; i++)
-            if (board[row][i] == 999)
-                return false;
-              
-        return true;
-    }
-	static boolean solveuntil(int board[][], int col)
-    {
-      
-        if (col >= N)
-            return true;
- 
-      
-        for (int i = 0; i < N; i++)
-        {
-            
-            if (isSafe(board, i, col))
-            {    System.out.print(i+" " +col+"\n");
-                
-                board[i][col] = 999;
- 
-              
-                if (solveuntil(board, col + 1) == true)
-                    return true;
-                board[i][col] = 0; // BACKTRACK
-            }
-        }
- 
-        return false;
-    }
-	public static void print(int[][] cm){
-		int n=cm.length;
-		int m=cm[0].length;
-		for(int i=0;i<n;i++){
-			 for(int j=0;j<m;j++){
-           System.out.print(cm[i][j]+" ");
-			 }
-			 System.out.println("");
-			 
-		 }
-	}
-	 public static void main(String args[])
-	 {
-		 int temp=4,temp1=4;
-		 //int test[]=new int[temp];
-		int CostMatrix[][]=new int [temp][temp1];
-		int temp6[][]=new int [temp][temp1];
-		
-		 Scanner sc = new Scanner(System.in);
-		 hungarian h = new hungarian();
-		 for(int i=0;i<temp;i++)
-			 for(int j=0;j<temp1;j++)
-			  {CostMatrix[i][j]=sc.nextInt();temp6[i][j]=CostMatrix[i][j];}
-		 h.print(CostMatrix);
-		 h.reduction(CostMatrix,0);
-		 h.print(CostMatrix);
-		 h.reduction(CostMatrix,1);
-		 h.print(CostMatrix);
-		 System.out.println();
-		 /*for(int i=0;i<temp;i++)
-			 System.out.print(test[i]);*/
-		 h.drawline(CostMatrix);
-		 if (solveuntil(CostMatrix, 0) == false)
-            System.out.print("Solution does not exist");
-        
-        printSolution(CostMatrix,temp6);
 	    }
-				 
 	 
-		 //System.out.println("Hello");
-		 
-	 }
+	 
+	 // last step-------------------------------
+	 
+	 
+		    static boolean isSafe(int board[][], int row, int col)
+	    {
+	        int i, j;
+	            if(board[row][col]!=0) return false;
+	            
+	        
+	        for (i = 0; i < col; i++)
+	            if (board[row][i] == 999)
+	                return false;
+	              
+	        return true;
+	    }
+		    
+		    
+		static boolean solveuntil(int board[][], int col)
+	    {
+	      
+	        if (col >= board.length)
+	            return true;
+	 
+	      
+	        for (int i = 0; i < board.length; i++)
+	        {
+	            
+	            if (isSafe(board, i, col))
+	            {    System.out.print(i+" " +col+"\n");
+	                
+	                board[i][col] = 999;
+	 
+	              
+	                if (solveuntil(board, col + 1) == true)
+	                    return true;
+	                board[i][col] = 0; // BACKTRACK
+	            }
+	        }
+	 
+	        return false;
+	    }
 
+		
+  static void displayJFrame()
+  {
+	  //----------------input cost matrix size---------------
+	  
+    frame = new JFrame("Project Hungarian");
+     inputField1=new JTextField(5);
+     Font bigFont = inputField1.getFont().deriveFont(Font.PLAIN, 30f);
+                inputField1.setFont(bigFont);
+    JButton three = new JButton("Go");
+    three.addActionListener(new ActionListener()
+    {
+      public void actionPerformed(ActionEvent e)
+      {  
+		  int n12=  Integer.parseInt(inputField1.getText());
+    	  setElements(n12,n12);
+      }
+    });
+    frame.getContentPane().setLayout(new FlowLayout());
+    frame.add(inputField1);
+    
+    frame.add(three);
+    frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+    frame.setPreferredSize(new Dimension(300, 100));
+    frame.pack();
+    frame.setLocationRelativeTo(null);
+    frame.setVisible(true);
+  }
+  
+  
+  private  static void setElements(int row,int col)
+  {
+      int temp, temp1;           
+      String tempString;
+      JButton calculate = new JButton("calculate");
+     JPanel choosePanel [] = new JPanel [row+3];
+     choosePanel[0] = new JPanel();
+     choosePanel[0].add(new Label("Fill cost matrix"));
+     choosePanel[choosePanel.length-1] = new JPanel();
+     choosePanel[choosePanel.length-1].add(new Label("Consider rows as teams and columns as projects"));
+     //choosePanel[choosePanel.length-1].add(calculate);
+     inputField  = new JTextField [row][col];
+     for(temp = 1; temp <= row; temp++)
+     {
+         choosePanel[temp] = new JPanel();
+         
+         
+         for(temp1 = 0; temp1 < col; temp1++)
+         {
+             inputField [temp-1][temp1] = new JTextField(4);
+             choosePanel[temp].add(inputField [temp-1][temp1]);
+             
+             if(temp1 < col -1)
+             {
+             choosePanel[temp].add(Box.createHorizontalStrut(10));
+             }
+             
+         }
+         
+     }
+     int result;
+    
+    /* calculate.addActionListener(new ActionListener()
+     {
+       public void actionPerformed(ActionEvent e)
+       {
+         calchungarian(inputField);
+       }
+     });*/
+    result = JOptionPane.showConfirmDialog(null, choosePanel, 
+             "INPUT", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+    if (result == JOptionPane.OK_OPTION) {
+    	calchungarian(inputField);
+      }
+  }
+  private static void calchungarian (JTextField field [][] )
+  {   
+	  int Costmatrix[][] = new int[field.length][field[0].length];
+	  int temp6[][]=new int [field.length][field[0].length];
+      for(int temp = 0; temp < field.length; temp++)
+      {
+          for(int temp1 = 0; temp1 < field[0].length; temp1++)
+          {
+              Costmatrix[temp][temp1]= Integer.parseInt(field[temp][temp1].getText());
+              temp6[temp][temp1]=Costmatrix[temp][temp1];
+          }
+      }
+      // h.print(CostMatrix);
+ 	   reduction(Costmatrix,0);
+ 	  // h.print(CostMatrix);
+ 	   reduction(Costmatrix,1);
+ 	 //  h.print(CostMatrix);
+ 	// System.out.println();
+ 	 /*for(int i=0;i<temp;i++)
+ 		 System.out.print(test[i]);*/
+ 	 drawline(Costmatrix);
+ 	 if (solveuntil(Costmatrix, 0) == false)
+         System.out.print("Solution does not exist");
+     
+     printSolution(Costmatrix,temp6);
+      
+     /* JFrame frame1 = new JFrame("Project");
+      String x= "";
+      x=x+costmatrix[0][0];
+      JButton calc = new JButton(x);
+      frame1.getContentPane().setLayout(new FlowLayout());
+      frame1.add(calc);
+      frame1.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+      frame1.setPreferredSize(new Dimension(300, 200));
+      frame1.pack();
+      frame1.setLocationRelativeTo(null);
+      frame1.setVisible(true);*/
+      
+  }
+  
+}
